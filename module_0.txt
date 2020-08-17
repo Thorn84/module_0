@@ -1,0 +1,43 @@
+import numpy as np
+begin = 0
+end = 100
+count = 1
+predict = np.random.randint(1,100)
+median = int((begin+end) / 2)
+
+#Функция реализует поиск числа в упорядоченной последовательности от 1 до 100
+#с помощью рекурсивного обхода дерева, где узлами являются медианные значения
+
+def game_core_v3(number=0,median=1,begin=0,end=100,count=1):
+    
+    #Если в узле находится искомое значение то она возвращает количество узлов, 
+    #которые были посещены во время выполнения поиска
+    
+    if median == number:
+        return(int(count))
+    else:
+        
+        #Иначе задаются новые параметры для поиска
+        
+        #Если искомое значение больше медианного значения для поиска используем правое поддерево
+        if number > median:
+            begin = median+1
+        #Если искомое значение меньше медианного значения для поиска используем левое поддерево
+        else:
+            end = median-1
+        
+        #Далее осуществляется повторный вызов функции но с новыми параметрами поиска
+        return game_core_v3(number,int((begin+end) / 2),begin,end,count+1)
+
+def score_game(game_core):
+    '''Запускаем игру 1000 раз, чтобы узнать, как быстро игра угадывает число'''
+    count_ls = []
+    np.random.seed(1)  # фиксируем RANDOM SEED, чтобы ваш эксперимент был воспроизводим!
+    random_array = np.random.randint(1,101, size=(1000))
+    for number in random_array:
+        count_ls.append(game_core(number,median,begin,end,count))
+    score = int(np.mean(count_ls))
+    print(f"Ваш алгоритм угадывает число в среднем за {score} попыток")
+    return(score)
+
+score_game(game_core_v3)
